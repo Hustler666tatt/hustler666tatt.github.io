@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>QR — HUSTLER TATTOO</title>
+<style>
+  body{margin:0;min-height:100dvh;display:grid;place-items:center;background:#0b0b0b;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+  .card{background:#121212;border:1px solid #232323;border-radius:16px;padding:24px;box-shadow:0 10px 30px #0007; text-align:center}
+  #q{width:320px;height:320px;margin:10px auto;background:#fff;border-radius:10px;display:grid;place-items:center}
+  .btn{margin-top:14px;background:#ff4444;color:#fff;border:0;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer}
+  .muted{opacity:.8;font-size:.95em}
+</style>
+</head>
+<body>
+  <div class="card">
+    <h1 style="margin:0 0 6px">HUSTLER TATTOO — QR</h1>
+    <div class="muted">Escaneá para abrir</div>
+    <div id="q"></div>
+    <button id="dl" class="btn">Descargar PNG</button>
+    <div class="muted" style="margin-top:10px">Si cambiás la URL, editá la constante <code>URL</code> en este archivo.</div>
+  </div>
+
+  <!-- QRCode.js (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-MpGq5M1o1aYWG9qUo0x1rN9M3b0CPqQyBzQkQ3m0F5s2n7bJgZ7zq8mG+5kG5qJ8k0Kk9rbtzh5M8sg0Vw7Yig==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+  <script>
+    // 👇 URL de tu landing:
+    const URL = "https://hustler666tatt.github.io/";
+
+    const el = document.getElementById('q');
+    const qr = new QRCode(el, {
+      text: URL,
+      width: 300,
+      height: 300,
+      correctLevel: QRCode.CorrectLevel.H, // mejor tolerancia si pegás logo encima
+      colorDark: "#000000",
+      colorLight: "#ffffff"
+    });
+
+    // descargar como PNG
+    document.getElementById('dl').onclick = () => {
+      // QRCode.js crea un <img> o <canvas> según el navegador
+      const img = el.querySelector('img');
+      const canvas = el.querySelector('canvas');
+      let dataURL;
+      if (canvas) dataURL = canvas.toDataURL("image/png");
+      else if (img) dataURL = img.src;
+      const a = document.createElement('a');
+      a.href = dataURL;
+      a.download = 'hustler-qr.png';
+      a.click();
+    };
+  </script>
+</body>
+</html>
