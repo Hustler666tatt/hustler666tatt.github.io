@@ -1,49 +1,80 @@
-<!-- QRCode.js (CDN confiable) -->
-<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
-<script>
-  // URL de destino (cambiá esto si querés que el QR apunte a otra página)
-  const URL = "https://hustler666tatt.github.io/";
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>QR — HUSTLER TATTOO</title>
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
+  <style>
+    :root{ --bg:#0b0b0b; --fg:#f5f5f5; }
+    html,body{height:100%;margin:0}
+    body{display:grid;place-items:center;background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,sans-serif}
+    .card{background:#121212;border:1px solid #232323;border-radius:16px;padding:24px 24px 28px;box-shadow:0 10px 30px #0007;text-align:center;max-width:500px}
+    h1{margin:0 0 6px}
+    .muted{opacity:.8;font-size:.95em}
+    #q{width:320px;height:320px;margin:12px auto;background:#fff;border-radius:10px;display:grid;place-items:center;overflow:hidden}
+    .btn{margin-top:14px;background:#ff4444;color:#fff;border:0;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer}
+    a.back{display:inline-block;margin-top:12px;color:#ff6b9a;text-decoration:none}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h1>HUSTLER TATTOO — QR</h1>
+    <div class="muted">Escaneá para abrir</div>
+    <div id="q"></div>
+    <button id="dl" class="btn">Descargar PNG</button>
+    <div class="muted" style="margin-top:10px">Si cambiás la URL, editá la constante <code>URL</code> abajo.</div>
+    <a href="/" class="back">← Volver</a>
+  </div>
 
-  const box = document.getElementById('q');
+  <!-- Librería QR (CDN confiable) -->
+  <script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+  <script>
+    // URL de tu landing:
+    const URL = "https://hustler666tatt.github.io/";
 
-  function renderWithLib() {
-    // Si la librería cargó, existe window.QRCode
-    if (window.QRCode) {
-      new QRCode(box, {
-        text: URL,
-        width: 300,
-        height: 300,
-        correctLevel: QRCode.CorrectLevel.H,
-        colorDark: "#000000",
-        colorLight: "#ffffff"
-      });
-      return true;
+    const box = document.getElementById('q');
+
+    function renderWithLib() {
+      if (window.QRCode) {
+        new QRCode(box, {
+          text: URL,
+          width: 300,
+          height: 300,
+          correctLevel: QRCode.CorrectLevel.H,
+          colorDark: "#000000",
+          colorLight: "#ffffff"
+        });
+        return true;
+      }
+      return false;
     }
-    return false;
-  }
 
-  function renderFallback() {
-    // Fallback: imagen de un servicio público (rápido y fiable)
-    const api = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(URL);
-    const img = new Image();
-    img.width = 300; img.height = 300; img.alt = "QR";
-    img.src = api;
-    box.innerHTML = "";
-    box.appendChild(img);
-  }
+    function renderFallback() {
+      const api = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(URL);
+      const img = new Image();
+      img.width = 300; img.height = 300; img.alt = "QR";
+      img.src = api;
+      box.innerHTML = "";
+      box.appendChild(img);
+    }
 
-  // Intenta con la librería; si no, usa fallback
-  if (!renderWithLib()) renderFallback();
+    // Intenta con la librería; si falla, usa imagen fallback
+    if (!renderWithLib()) renderFallback();
 
-  // Descargar PNG
-  document.getElementById('dl').onclick = () => {
-    const canvas = box.querySelector("canvas");
-    const img = box.querySelector("img");
-    const data = canvas ? canvas.toDataURL("image/png") : (img ? img.src : null);
-    if (!data) return;
-    const a = document.createElement("a");
-    a.href = data;
-    a.download = "hustler-qr.png";
-    a.click();
-  };
-</script>
+    // Descargar PNG (funciona con canvas o con imagen fallback)
+    document.getElementById('dl').onclick = () => {
+      const canvas = box.querySelector("canvas");
+      const img = box.querySelector("img");
+      const data = canvas ? canvas.toDataURL("image/png") : (img ? img.src : null);
+      if (!data) return;
+      const a = document.createElement("a");
+      a.href = data;
+      a.download = "hustler-qr.png";
+      a.click();
+    };
+  </script>
+</body>
+</html>
