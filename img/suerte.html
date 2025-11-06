@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Suerte</title>
+<style>
+  html,body{height:100%;margin:0;background:#0b0b0b;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
+  .wrap{height:100%;display:grid;place-items:center;text-align:center;padding:24px}
+  a{color:#ff4444}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div>
+      <h1>HUSTLER TATTOO</h1>
+      <p>Eligiendo tu premio al azar…</p>
+      <p id="fallback" style="opacity:.7">Si no redirige, toca <a id="link" href="#">acá</a>.</p>
+    </div>
+  </div>
+
+<script>
+/* Editá acá tus destinos y probabilidades (weights). 
+   suman 1.0 (o no; el script normaliza). */
+const choices = [
+  { url: "https://hustler666tatt.github.io/", label: "Página principal", weight: 0.35 },
+  { url: "https://wa.me/59896590303",         label: "WhatsApp",        weight: 0.30 },
+  { url: "https://www.instagram.com/_hustler_tatt", label: "Instagram", weight: 0.20 },
+  { url: "https://hustler666tatt.github.io/ruleta.html", label: "Ruleta", weight: 0.15 }
+];
+
+function pickWeighted(arr){
+  const total = arr.reduce((s,c)=>s+(c.weight||1),0);
+  let r = Math.random()*total;
+  for(const c of arr){ r -= (c.weight||1); if(r<=0) return c; }
+  return arr[arr.length-1];
+}
+
+// Evitá repetir inmediatamente (guarda última URL en localStorage)
+const last = localStorage.getItem("ht_last");
+let choice = pickWeighted(choices);
+if(last && choices.length>1 && choice.url===last){ choice = pickWeighted(choices); }
+
+document.getElementById("link").href = choice.url;
+setTimeout(()=>{ 
+  localStorage.setItem("ht_last", choice.url);
+  location.href = choice.url; 
+}, 600);
+</script>
+</body>
+</html>
