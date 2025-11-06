@@ -61,10 +61,24 @@
   .social{ display:inline-flex; align-items:center; gap:8px; margin:10px 14px; }
   .social img{ width:22px; height:22px; display:block; filter: drop-shadow(0 0 2px #000a); }
 
+  /* ===== Badge Cry Baby ===== */
+  .badge{
+    display:none;
+    margin: 8px auto 0;
+    width: min(92vw, 680px);
+    background: #1a1a1a;
+    border: 1px dashed #444;
+    color:#f2f2f2;
+    padding:10px 14px;
+    border-radius:12px;
+    box-shadow: 0 6px 18px #0006;
+  }
+  .badge b{ color:#ff6b9a }
+
   /* ===== Card Raspa & Gana ===== */
   .card{
     width: min(92vw, 680px);
-    margin: 26px auto 10px;
+    margin: 16px auto 10px;
     background: #121212;
     border: 1px solid #232323;
     border-radius: 16px;
@@ -78,7 +92,7 @@
     position: relative;
     margin: 14px auto 0;
     width: min(92vw, 640px);
-    aspect-ratio: 16/7;           /* formato panorámico, queda fachero */
+    aspect-ratio: 16/7;
     border-radius: 14px;
     overflow: hidden;
     box-shadow: 0 10px 30px #0009, inset 0 0 20px #0007;
@@ -97,7 +111,6 @@
   }
   canvas#scratch{
     position:absolute; inset:0; width:100%; height:100%;
-    /* “capa plateada” */
     background:
       radial-gradient(1200px 500px at 50% -20%, #ffffff10, #0000 60%),
       linear-gradient(135deg, #ffffff, #bfbfbf 40%, #e9e9e9 60%, #cfcfcf);
@@ -115,22 +128,44 @@
     background: #2b2b2b; color:#f2f2f2; border:1px solid #3a3a3a;
   }
   .hint{ margin-top: 8px; color:#cfcfcf; opacity:.8; font-size:.95em; }
+
+  .locked{ margin-top:10px; color:#cfcfcf; opacity:.9; }
+
+  /* ===== Revelado: animación glitch/confetti ===== */
+  .burst{
+    position: fixed; inset:0; pointer-events:none; z-index: 10; display:none;
+  }
+  .burst .p{
+    position:absolute; width:6px; height:24px; background:#fff;
+    left:50%; top:40%;
+    transform-origin: center 200px;
+    opacity:.85;
+    animation: shoot 600ms ease-out forwards;
+  }
+  @keyframes shoot{
+    0% { transform: translate(-50%,-50%) rotate(var(--deg)) scaleY(1); opacity:1; }
+    100%{ transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--deg)) scaleY(0.2); opacity:0; }
+  }
 </style>
 </head>
 <body>
   <div class="container">
     <h1 class="logo" data-text="HUSTLER TATTOO">HUSTLER TATTOO</h1>
 
+    <div id="badge" class="badge"></div>
+
     <p>🎉 Felicidades 🎉</p>
     <p>Por escanear este código te ganaste un premio. <span class="subtle">Raspá para revelar.</span></p>
-<p style="opacity:.8;font-size:.95em;margin-top:4px">
-Para reclamar cualquier premio: <br>
-<b>subí una historia etiquetando @_hustler_tatt</b> 📲🔥
-</p>
+    <p style="opacity:.8;font-size:.95em;margin-top:4px">
+      Para reclamar cualquier premio: <br>
+      <b>subí una historia etiquetando @_hustler_tatt</b> 📲🔥
+    </p>
+
     <!-- ===== RASPA Y GANA ===== -->
     <div class="card">
-      <div class="scratch-wrap">
-        <!-- premio (texto se setea por JS) -->
+      <div id="lockMsg" class="locked" style="display:none"></div>
+
+      <div class="scratch-wrap" id="scratchWrap">
         <div id="prize" class="prize" aria-live="polite">
           <div>
             <div class="muted">Tu premio es:</div>
@@ -138,11 +173,11 @@ Para reclamar cualquier premio: <br>
             <div class="muted" id="prizeNote"></div>
           </div>
         </div>
-        <!-- capa que se raspa -->
         <canvas id="scratch"></canvas>
       </div>
 
-      <div class="hint">Usá el dedo o el mouse para raspar. Al descubrir suficiente, se revela automáticamente.</div>
+      <div class="hint" id="hint">Usá el dedo o el mouse para raspar. Al descubrir suficiente, se revela automáticamente.</div>
+      <button id="confirmStory" class="btn" style="display:none">Ya subí la historia ✅</button>
       <button id="resetBtn" class="btn secondary" style="display:none">Volver a intentar</button>
     </div>
 
@@ -160,197 +195,236 @@ Para reclamar cualquier premio: <br>
     </div>
   </div>
 
+  <!-- capa confetti/glitch -->
+  <div id="burst" class="burst"></div>
+
 <script>
-/* ================== CONFIGURACIÓN DE PREMIOS ================== */
-/* Editá labels si querés; weights controlan chances relativas. */
-/* Premios + probabilidades */
-/* Premios + probabilidades */
-const PRIZES = [
-  { 
-    label: "TATTOO IGNORANT GRATIS (hasta 6cm)", 
-    weight: 0.20, 
-    note:"Sujeto a disponibilidad y agenda. Debés subir una historia etiquetando @_hustler_tatt para validar."
-  },
-  { 
-    label: "2 Tattoos x $3000 (hasta 9cm)",      
-    weight: 0.25, 
-    note:"Precio promo por ambos. Línea y negro. Requiere subir historia etiquetando."
-  },
-  { 
-    label: "MATCHING TATTOO 2X1 (dos personas)", 
-    weight: 0.15, 
-    note:"Diseños iguales o combinados simples. Requiere subir historia etiquetando."
-  },
-  { 
-    label: "Cita privada nocturna (fuera de agenda)", 
-    weight: 0.08,
-    note:"Experiencia exclusiva. Requiere subir historia etiquetando."
-  },
-  { 
-    label: "Bebida / snack en el estudio", 
-    weight: 0.08,
-    note:"Cortesía del estudio. Requiere subir historia etiquetando."
-  },
-  { 
-    label: "Piedra, papel o tijera por un 50% OFF (si perdés → 10% OFF)", 
-    weight: 0.14,
-    note:"Modo duelo 😈. Debés subir historia etiquetando para jugar."
-  },
-  { 
-    label: "Toque final / mejora de tattoo viejo gratis", 
-    weight: 0.10,
-    note:"Retoque ligero. Requiere subir historia etiquetando."
-  }
-];
-/* ================== LÓGICA DE AZAR (ponderada) ================== */
-function pickWeighted(arr){
-  const total = arr.reduce((s,c)=>s+(c.weight||1),0);
-  let r = Math.random()*total;
-  for(const c of arr){ r -= (c.weight||1); if(r<=0) return c; }
-  return arr[arr.length-1];
+/* ================== MODO TEST & CONFIG ================== */
+/* Agregá ?test=1 a la URL para probar sin bloqueo diario. 
+   Agregá ?reset=1 para limpiar el premio guardado. */
+const DEV = /[?&]test=1\b/.test(location.search) || location.hash.includes('#dev');
+const RESET = /[?&]reset=1\b/.test(location.search);
+
+const LOCK_HOURS = DEV ? 0 : 24;               // bloqueo diario
+const NO_IMMEDIATE_REPEAT = true;
+const STORAGE_KEY = DEV ? "ht_scratch_prize_dev" : "ht_scratch_prize_v2";
+const STORY_KEY   = DEV ? "ht_story_ok_dev"     : "ht_story_ok";
+
+/* Limpia storage si se pide reset */
+if (RESET) {
+  localStorage.removeItem(STORAGE_KEY);
+  localStorage.removeItem(STORY_KEY);
 }
 
-const prize = (()=>{
-  // Opción: bloquear repetición en el mismo dispositivo por 24h
-  const KEY = "ht_scratch_prize";
-  const last = JSON.parse(localStorage.getItem(KEY) || "null");
-  const dayMs = 24*60*60*1000;
-  if(last && (Date.now()-last.time) < dayMs){ return last; }
-  const p = { ...pickWeighted(PRIZES), time: Date.now() };
-  localStorage.setItem(KEY, JSON.stringify(p));
-  return p;
-})();
+/* Premios + probabilidades (incluye los nuevos) */
+const PRIZES = [
+  { label: "TATTOO IGNORANT GRATIS (hasta 6cm)", weight: 0.20, note:"Sujeto a disponibilidad y agenda. Requiere subir historia etiquetando." },
+  { label: "2 Tattoos x $3000 (hasta 9cm)",      weight: 0.25, note:"Precio promo por ambos. Línea y negro. Requiere historia etiquetando." },
+  { label: "MATCHING TATTOO 2X1 (dos personas)", weight: 0.15, note:"Diseños iguales o combinados simples. Requiere historia etiquetando." },
+  { label: "Cita privada nocturna (fuera de agenda)", weight: 0.08, note:"Experiencia exclusiva. Requiere historia etiquetando." },
+  { label: "Bebida / snack en el estudio",       weight: 0.08, note:"Cortesía del estudio. Requiere historia etiquetando." },
+  { label: "Piedra, papel o tijera por 50% OFF (si perdés → 10% OFF)", weight: 0.14, note:"Modo duelo 😈. Requiere historia etiquetando." },
+  { label: "Toque final / mejora de tattoo viejo gratis", weight: 0.10, note:"Retoque ligero. Requiere historia etiquetando." }
+];
 
+/* ===== util ===== */
+const ms = h => h*60*60*1000;
+function pickWeighted(arr, avoidLabel){
+  const candidates = NO_IMMEDIATE_REPEAT && avoidLabel
+    ? arr.filter(p => p.label !== avoidLabel) : arr.slice();
+  const total = candidates.reduce((s,c)=>s+(c.weight||1),0);
+  let r = Math.random()*total;
+  for(const c of candidates){ r -= (c.weight||1); if(r<=0) return c; }
+  return candidates[candidates.length-1];
+}
+
+/* ===== premio y bloqueo diario ===== */
+const now = Date.now();
+const last = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+if (DEV) { /* en test, no persistimos el último para que cambie siempre */
+  localStorage.removeItem(STORAGE_KEY);
+}
+
+let locked = false, prize;
+if (!DEV && last && (now - last.time) < ms(LOCK_HOURS)) {
+  locked = true;
+  prize = last;
+} else {
+  const lastLabel = last?.label;
+  prize = { ...pickWeighted(PRIZES, lastLabel), time: now };
+  if (!DEV) localStorage.setItem(STORAGE_KEY, JSON.stringify(prize));
+}
+
+/* ===== setear textos de premio ===== */
 const prizeTextEl = document.getElementById('prizeText');
 const prizeNoteEl = document.getElementById('prizeNote');
 prizeTextEl.textContent = prize.label;
 prizeNoteEl.textContent  = prize.note || "";
 
-/* ================== SCRATCH (Canvas) ================== */
+/* ===== badge “Cry Baby” si abandonó sin confirmar story ===== */
+const badge = document.getElementById('badge');
+const pendingKey = "ht_cb_pending";
+const hadPending = localStorage.getItem(pendingKey) === "1";
+if (hadPending) {
+  badge.style.display = 'block';
+  badge.innerHTML = `🏳️ <b>Cry Baby badge</b> activado: la última vez te fuiste sin confirmar la historia. 
+  Hoy podés volver a intentar — o reclamá tu premio subiendo la story y tocando “Ya subí la historia”.`;
+  localStorage.removeItem(pendingKey);
+}
+
+/* ===== UI de bloqueo (si aplica) ===== */
+const lockMsg = document.getElementById('lockMsg');
+const hint = document.getElementById('hint');
+const resetBtn = document.getElementById('resetBtn');
+const confirmBtn = document.getElementById('confirmStory');
+
+if (locked) {
+  const remainingMs = ms(LOCK_HOURS) - (now - last.time);
+  const hrs = Math.ceil(remainingMs/ (60*60*1000));
+  lockMsg.style.display = 'block';
+  lockMsg.textContent = `Ya jugaste hoy 😉 Volvé en ~${hrs}h para intentar de nuevo.`;
+  document.getElementById('scratch').style.display = 'none';
+  hint.style.display = 'none';
+  resetBtn.style.display = 'none';
+} else {
+  confirmBtn.style.display = 'none'; // aparecerá luego del reveal
+}
+
+/* ===== SCRATCH (Canvas) + revelado con burst glitch ===== */
 const canvas = document.getElementById('scratch');
-const ctx = canvas.getContext('2d', { willReadFrequently:true });
+if (!locked) {
+  const ctx = canvas.getContext('2d', { willReadFrequently:true });
+  let drawing = false, revealed = false;
+  let storyOk = localStorage.getItem(STORY_KEY) === '1';
+  let lastX = 0, lastY = 0;
+  const BRUSH = 26;
+  const REVEAL_THRESHOLD = 0.46;
 
-let drawing = false;
-let revealed = false;
-let lastX = 0, lastY = 0;
-const BRUSH = 26;             // tamaño del pincel
-const REVEAL_THRESHOLD = 0.46; // % a raspar para auto-revelar
-
-// Ajusta canvas a píxeles reales del tamaño CSS
-function fitCanvas(){
-  const rect = canvas.getBoundingClientRect();
-  const scale = window.devicePixelRatio || 1;
-  canvas.width  = Math.floor(rect.width * scale);
-  canvas.height = Math.floor(rect.height * scale);
-  ctx.scale(scale, scale);
-  paintCover();
-}
-function paintCover(){
-  const { width, height } = canvas.getBoundingClientRect();
-  // capa “tipo raspa”: gris con ruido leve y texto guía
-  ctx.globalCompositeOperation = 'source-over';
-  const grad = ctx.createLinearGradient(0,0,width,height);
-  grad.addColorStop(0, '#cfcfcf');
-  grad.addColorStop(1, '#a9a9a9');
-  ctx.fillStyle = grad;
-  ctx.fillRect(0,0,width,height);
-
-  // pequeñas “rayas”
-  ctx.globalAlpha = .18;
-  for(let i=0;i<140;i++){
-    const x = Math.random()*width, y = Math.random()*height;
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(x, y, Math.random()*2+0.4, 1);
+  function fitCanvas(){
+    const rect = canvas.getBoundingClientRect();
+    const scale = window.devicePixelRatio || 1;
+    canvas.width  = Math.floor(rect.width * scale);
+    canvas.height = Math.floor(rect.height * scale);
+    ctx.setTransform(scale, 0, 0, scale, 0, 0);
+    paintCover();
   }
-  ctx.globalAlpha = 1;
+  function paintCover(){
+    const { width, height } = canvas.getBoundingClientRect();
+    ctx.globalCompositeOperation = 'source-over';
+    const grad = ctx.createLinearGradient(0,0,width,height);
+    grad.addColorStop(0, '#cfcfcf'); grad.addColorStop(1, '#a9a9a9');
+    ctx.fillStyle = grad; ctx.fillRect(0,0,width,height);
+    ctx.globalAlpha = .18;
+    for(let i=0;i<140;i++){
+      const x = Math.random()*width, y = Math.random()*height;
+      ctx.fillStyle = '#ffffff'; ctx.fillRect(x, y, Math.random()*2+0.4, 1);
+    }
+    ctx.globalAlpha = 1;
+    ctx.fillStyle = '#1a1a1a'; ctx.font = 'bold 20px Arial';
+    ctx.textAlign = 'center';
+    ctx.fillText('RASPÁ PARA REVELAR', width/2, height/2);
+  }
+  function scratchTo(x,y){
+    const rect = canvas.getBoundingClientRect();
+    const cx = x - rect.left, cy = y - rect.top;
+    ctx.globalCompositeOperation = 'destination-out';
+    ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = BRUSH*2;
+    ctx.beginPath(); ctx.moveTo(lastX || cx, lastY || cy); ctx.lineTo(cx, cy); ctx.stroke();
+    lastX = cx; lastY = cy;
+  }
+  function handleStart(e){
+    if(revealed) return;
+    drawing = true; lastX = lastY = 0;
+    const p = (e.touches && e.touches[0]) || e;
+    scratchTo(p.clientX, p.clientY); e.preventDefault();
+  }
+  function handleMove(e){
+    if(!drawing || revealed) return;
+    const p = (e.touches && e.touches[0]) || e;
+    scratchTo(p.clientX, p.clientY); e.preventDefault();
+  }
+  function handleEnd(){
+    drawing = false; lastX = lastY = 0; checkReveal();
+  }
+  function checkReveal(){
+    const rect = canvas.getBoundingClientRect();
+    const sample = ctx.getImageData(0,0,rect.width,rect.height).data;
+    let transparent = 0;
+    for(let i=3;i<sample.length;i+=4){ if(sample[i]===0) transparent++; }
+    const ratio = transparent / (sample.length/4);
+    if(ratio >= REVEAL_THRESHOLD){ doReveal(); }
+  }
 
-  // texto
-  ctx.fillStyle = '#1a1a1a';
-  ctx.font = 'bold 20px Arial';
-  ctx.textAlign = 'center';
-  ctx.fillText('RASPÁ PARA REVELAR', width/2, height/2);
-}
+  /* Burst glitch/confetti minimal */
+  function burst(){
+    const layer = document.getElementById('burst');
+    layer.innerHTML = '';
+    const N = 32;
+    for (let i=0;i<N;i++){
+      const el = document.createElement('div');
+      el.className = 'p';
+      const deg = Math.random()*360;
+      const dx = (Math.random()*240-120)+'px';
+      const dy = (Math.random()*240-80)+'px';
+      el.style.setProperty('--deg', deg+'deg');
+      el.style.setProperty('--dx', dx);
+      el.style.setProperty('--dy', dy);
+      el.style.background = (i%2? '#ff6b9a' : (i%3? '#7aa2f7' : '#f7c843'));
+      layer.appendChild(el);
+    }
+    layer.style.display = 'block';
+    setTimeout(()=>{ layer.style.display = 'none'; }, 650);
+  }
 
-function scratchTo(x,y){
-  const rect = canvas.getBoundingClientRect();
-  const cx = x - rect.left;
-  const cy = y - rect.top;
+  function doReveal(){
+    if(revealed) return;
+    revealed = true;
+    burst(); // animación
+    canvas.style.transition = 'opacity .5s ease';
+    canvas.style.opacity = 0;
+    setTimeout(()=>{ canvas.style.display = 'none'; }, 520);
+    resetBtn.style.display = 'inline-block';
+    confirmBtn.style.display = 'inline-block';
+  }
 
-  ctx.globalCompositeOperation = 'destination-out';
-  ctx.lineJoin = 'round';
-  ctx.lineCap  = 'round';
-  ctx.lineWidth = BRUSH*2;
+  /* Confirmación de story (para evitar Cry Baby) */
+  confirmBtn.addEventListener('click', ()=>{
+    localStorage.setItem(STORY_KEY, '1');
+    confirmBtn.textContent = '¡Listo! Gracias por etiquetar 🙌';
+    confirmBtn.disabled = true;
+  });
 
-  ctx.beginPath();
-  ctx.moveTo(lastX || cx, lastY || cy);
-  ctx.lineTo(cx, cy);
-  ctx.stroke();
+  /* Si se va sin confirmar story después de revelar → Cry Baby */
+  window.addEventListener('beforeunload', ()=>{
+    const confirmed = localStorage.getItem(STORY_KEY) === '1';
+    if (revealed && !confirmed) {
+      localStorage.setItem('ht_cb_pending', '1');
+    }
+  });
 
-  lastX = cx; lastY = cy;
-}
+  resetBtn.addEventListener('click', ()=>{
+    // reintenta localmente sin cambiar el premio del día
+    revealed = false;
+    canvas.style.display = 'block';
+    canvas.style.opacity = 1;
+    confirmBtn.style.display = 'none';
+    confirmBtn.disabled = false;
+    confirmBtn.textContent = 'Ya subí la historia ✅';
+    localStorage.removeItem(STORY_KEY);
+    fitCanvas();
+  });
 
-function handleStart(e){
-  if(revealed) return;
-  drawing = true;
-  lastX = lastY = 0;
-  const p = (e.touches && e.touches[0]) || e;
-  scratchTo(p.clientX, p.clientY);
-  e.preventDefault();
-}
-function handleMove(e){
-  if(!drawing || revealed) return;
-  const p = (e.touches && e.touches[0]) || e;
-  scratchTo(p.clientX, p.clientY);
-  e.preventDefault();
-}
-function handleEnd(){
-  drawing = false;
-  lastX = lastY = 0;
-  // chequea porcentaje raspado (muestra cuando supera el umbral)
-  checkReveal();
-}
+  window.addEventListener('resize', fitCanvas);
+  window.addEventListener('orientationchange', fitCanvas);
+  canvas.addEventListener('mousedown', handleStart);
+  canvas.addEventListener('mousemove', handleMove);
+  window.addEventListener('mouseup', handleEnd);
+  canvas.addEventListener('touchstart', handleStart, {passive:false});
+  canvas.addEventListener('touchmove',  handleMove,  {passive:false});
+  canvas.addEventListener('touchend',   handleEnd);
 
-function checkReveal(){
-  const rect = canvas.getBoundingClientRect();
-  const sample = ctx.getImageData(0,0,rect.width,rect.height).data;
-  let transparent = 0;
-  for(let i=3;i<sample.length;i+=4){ if(sample[i]===0) transparent++; }
-  const ratio = transparent / (sample.length/4);
-  if(ratio >= REVEAL_THRESHOLD){ doReveal(); }
-}
-
-function doReveal(){
-  if(revealed) return;
-  revealed = true;
-  // animación “desaparecer la capa”
-  canvas.style.transition = 'opacity .5s ease';
-  canvas.style.opacity = 0;
-  setTimeout(()=>{ canvas.style.display='none'; }, 520);
-  document.getElementById('resetBtn').style.display = 'inline-block';
-}
-
-// Reset (permite reintentar localmente)
-document.getElementById('resetBtn').addEventListener('click', ()=>{
-  revealed = false;
-  canvas.style.display = 'block';
-  canvas.style.opacity = 1;
   fitCanvas();
-});
-
-window.addEventListener('resize', fitCanvas);
-window.addEventListener('orientationchange', fitCanvas);
-
-// Eventos pointer
-canvas.addEventListener('mousedown', handleStart);
-canvas.addEventListener('mousemove', handleMove);
-window.addEventListener('mouseup', handleEnd);
-
-canvas.addEventListener('touchstart', handleStart, {passive:false});
-canvas.addEventListener('touchmove',  handleMove,  {passive:false});
-canvas.addEventListener('touchend',   handleEnd);
-
-/* Init */
-fitCanvas();
+}
 </script>
 </body>
 </html>
