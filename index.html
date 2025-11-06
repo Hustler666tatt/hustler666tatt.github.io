@@ -160,11 +160,45 @@
 <script>
 /* ================== CONFIGURACIÓN DE PREMIOS ================== */
 /* Editá labels si querés; weights controlan chances relativas. */
+/* Premios + probabilidades */
 const PRIZES = [
-  { label: "TATTOO IGNORANT GRATIS (hasta 6cm)", weight: 0.25, note:"Sujeto a disponibilidad y agenda." },
-  { label: "2 Tattoos x $3000 (hasta 9cm)",      weight: 0.45, note:"Precio promo por ambos. Línea y negro." },
-  { label: "MATCHING TATTOO 2X1 (para dos personas)", weight: 0.30, note:"Diseños iguales o combinados simples." }
+  
+    label: "TATTOO IGNORANT GRATIS (hasta 6cm)", 
+    weight: 0.20, 
+    note:"Sujeto a disponibilidad y agenda. Debés subir una historia etiquetando @_hustler_tatt para validar."
+  },
+  { 
+    label: "2 Tattoos x $3000 (hasta 9cm)",      
+    weight: 0.25, 
+    note:"Precio promo por ambos. Línea y negro. Requiere subir historia etiquetando."
+  },
+  { 
+    label: "MATCHING TATTOO 2X1 (dos personas)", 
+    weight: 0.15, 
+    note:"Diseños iguales o combinados simples. Requiere subir historia etiquetando."
+  },
+  { 
+    label: "Cita privada nocturna (fuera de agenda)", 
+    weight: 0.08,
+    note:"Experiencia exclusiva. Requiere subir historia etiquetando."
+  },
+  { 
+    label: "Bebida / snack en el estudio", 
+    weight: 0.08,
+    note:"Cortesía del estudio. Requiere subir historia etiquetando."
+  },
+  { 
+    label: "Piedra, papel o tijera por un 50% OFF (si perdés → 10% OFF)", 
+    weight: 0.14,
+    note:"Modo duelo 😈. Debés subir historia etiquetando para jugar."
+  },
+  { 
+    label: "Toque final / mejora de tattoo viejo gratis", 
+    weight: 0.10,
+    note:"Retoque ligero. Requiere subir historia etiquetando."
+  }
 ];
+
 
 /* ================== LÓGICA DE AZAR (ponderada) ================== */
 function pickWeighted(arr){
