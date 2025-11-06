@@ -1,49 +1,49 @@
-<!doctype html>
-<html lang="es">
-<head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>QR — HUSTLER TATTOO</title>
-<style>
-  body{margin:0;min-height:100vh;display:grid;place-items:center;background:#0b0b0b;color:#f5f5f5;font-family:Arial,Helvetica,sans-serif}
-  .card{background:#121212;border:1px solid #232323;border-radius:16px;padding:24px;box-shadow:0 10px 30px #0007;text-align:center}
-  #q{width:320px;height:320px;margin:10px auto;background:#fff;border-radius:10px;display:grid;place-items:center}
-  .btn{margin-top:14px;background:#ff4444;color:#fff;border:0;border-radius:999px;padding:12px 18px;font-weight:700;cursor:pointer}
-  .muted{opacity:.8;font-size:.95em}
-</style>
-</head>
-<body>
-  <div class="card">
-    <h1 style="margin:0 0 6px">HUSTLER TATTOO — QR</h1>
-    <div class="muted">Escaneá para abrir</div>
-    <div id="q"></div>
-    <button id="dl" class="btn">Descargar PNG</button>
-    <div class="muted" style="margin-top:10px">Si cambiás la URL, editá la constante <code>URL</code> abajo.</div>
-  </div>
+<!-- QRCode.js (CDN confiable) -->
+<script src="https://cdn.jsdelivr.net/gh/davidshimjs/qrcodejs/qrcode.min.js"></script>
+<script>
+  // URL de destino (cambiá esto si querés que el QR apunte a otra página)
+  const URL = "https://hustler666tatt.github.io/";
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
-  <script>
-    const URL = "https://hustler666tatt.github.io/";
-    const el = document.getElementById('q');
+  const box = document.getElementById('q');
 
-    const qr = new QRCode(el, {
-      text: URL,
-      width: 300,
-      height: 300,
-      correctLevel: QRCode.CorrectLevel.H,
-      colorDark: "#000000",
-      colorLight: "#ffffff"
-    });
+  function renderWithLib() {
+    // Si la librería cargó, existe window.QRCode
+    if (window.QRCode) {
+      new QRCode(box, {
+        text: URL,
+        width: 300,
+        height: 300,
+        correctLevel: QRCode.CorrectLevel.H,
+        colorDark: "#000000",
+        colorLight: "#ffffff"
+      });
+      return true;
+    }
+    return false;
+  }
 
-    document.getElementById('dl').onclick = () => {
-      const canvas = el.querySelector("canvas");
-      const img = el.querySelector("img");
-      const data = canvas ? canvas.toDataURL("image/png") : img.src;
-      const a = document.createElement("a");
-      a.href = data;
-      a.download = "hustler-qr.png";
-      a.click();
-    };
-  </script>
-</body>
-</html>
+  function renderFallback() {
+    // Fallback: imagen de un servicio público (rápido y fiable)
+    const api = "https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=" + encodeURIComponent(URL);
+    const img = new Image();
+    img.width = 300; img.height = 300; img.alt = "QR";
+    img.src = api;
+    box.innerHTML = "";
+    box.appendChild(img);
+  }
+
+  // Intenta con la librería; si no, usa fallback
+  if (!renderWithLib()) renderFallback();
+
+  // Descargar PNG
+  document.getElementById('dl').onclick = () => {
+    const canvas = box.querySelector("canvas");
+    const img = box.querySelector("img");
+    const data = canvas ? canvas.toDataURL("image/png") : (img ? img.src : null);
+    if (!data) return;
+    const a = document.createElement("a");
+    a.href = data;
+    a.download = "hustler-qr.png";
+    a.click();
+  };
+</script>
