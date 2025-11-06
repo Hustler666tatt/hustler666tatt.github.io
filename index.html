@@ -1,155 +1,320 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>HUSTLER TATTOO</title>
-  <style>
-    :root{
-      --bg:#0b0b0b;
-      --fg:#f5f5f5;
-      --accent:#ff4444;
-    }
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>HUSTLER TATTOO</title>
+<style>
+  :root{ --bg:#0b0b0b; --fg:#f5f5f5; --accent:#ff4444; --muted:#b1b1b1; }
 
-    /* ===== Base ===== */
-    html,body{
-      height:100%;
-      margin:0;
-    }
-    body{
-      font-family: Arial, Helvetica, sans-serif;
-      background: var(--bg);
-      color: var(--fg);
-      text-align:center;
-      overflow-x:hidden;
-    }
-    .container{
-      max-width: 760px;
-      margin: 0 auto;
-      padding: 72px 20px 96px;
-      position: relative;
-      z-index: 1;
-    }
-    p{ margin:12px 0; line-height:1.6; font-size:1.1em; }
-    a{ color: var(--accent); text-decoration: none; }
-    a:hover{ text-decoration: underline; }
+  /* ===== Base ===== */
+  html,body{height:100%;margin:0}
+  body{
+    background: var(--bg);
+    color: var(--fg);
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+    overflow-x: hidden;
+  }
+  .container{ max-width: 860px; margin: 0 auto; padding: 64px 20px 96px; position: relative; z-index:1; }
+  p{ margin:12px 0; line-height:1.6; font-size:1.1em; }
+  a{ color: var(--accent); text-decoration: none; }
+  a:hover{ text-decoration: underline; }
 
-    /* ===== Fondo grunge oscuro (sin imágenes externas) ===== */
-    /* capa de viñeta + textura granular + rayas muy sutiles */
-    body::before{
-      content:"";
-      position:fixed; inset:0;
-      background:
-        radial-gradient(1200px 600px at 50% -10%, #ffffff05, #0000 70%),
-        radial-gradient(1200px 600px at 50% 110%, #00000070, #0000 60%),
-        linear-gradient(180deg, #0b0b0b 0%, #0a0a0a 30%, #0c0c0c 60%, #0a0a0a 100%);
-      pointer-events:none;
-      z-index:0;
-    }
-    body::after{
-      content:"";
-      position:fixed; inset:0;
-      /* “ruido” y “scratches” ligeros */
-      background:
-        repeating-linear-gradient(120deg, #ffffff06 0 2px, #0000 2px 8px),
-        repeating-linear-gradient(0deg, #00000000 0 1px, #ffffff06 1px 2px);
-      mix-blend-mode: overlay;
-      opacity:.18;
-      pointer-events:none;
-      z-index:0;
-    }
+  /* ===== Fondo grunge oscuro ===== */
+  body::before{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      radial-gradient(1200px 600px at 50% -10%, #ffffff05, #0000 70%),
+      radial-gradient(1200px 600px at 50% 110%, #00000070, #0000 60%),
+      linear-gradient(180deg, #0b0b0b 0%, #0a0a0a 30%, #0c0c0c 60%, #0a0a0a 100%);
+  }
+  body::after{
+    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
+    background:
+      repeating-linear-gradient(120deg, #ffffff06 0 2px, #0000 2px 8px),
+      repeating-linear-gradient(0deg, #0000 0 1px, #ffffff06 1px 2px);
+    mix-blend-mode: overlay; opacity:.18;
+  }
 
-    /* ===== Título con glitch minimal ===== */
-    .logo{
-      position: relative;
-      display:inline-block;
-      color: var(--accent);
-      font-weight: 900;
-      letter-spacing: 2px;
-      font-size: clamp(2rem, 6vw, 3rem);
-      margin: 0 0 18px;
-      text-transform: uppercase;
-      /* sutil “scanline” */
-      filter: drop-shadow(0 1px 0 #00000080);
-      animation: glow 4s ease-in-out infinite;
-    }
-    .logo::before,
-    .logo::after{
-      content: attr(data-text);
-      position:absolute; inset:0;
-      pointer-events:none;
-      mix-blend-mode:screen;
-    }
-    .logo::before{ 
-      color:#00e5ff; 
-      transform: translateX(0); 
-      animation: glitchX 2.8s steps(1,end) infinite;
-      clip-path: inset(0 0 0 0);
-      opacity:.6;
-    }
-    .logo::after{  
-      color:#ff0066; 
-      transform: translateX(0); 
-      animation: glitchY 2.8s steps(1,end) infinite;
-      clip-path: inset(0 0 0 0);
-      opacity:.6;
-    }
-    @keyframes glitchX{
-      0%,14%{ transform: translateX(0); }
-      15%,18%{ transform: translateX(2px); }
-      19%,22%{ transform: translateX(-2px); }
-      23%,100%{ transform: translateX(0); }
-    }
-    @keyframes glitchY{
-      0%,14%{ transform: translateY(0); }
-      15%,18%{ transform: translateY(-1px); }
-      19%,22%{ transform: translateY(1px); }
-      23%,100%{ transform: translateY(0); }
-    }
-    @keyframes glow{
-      0%,100%{ text-shadow: 0 0 0 transparent; }
-      50%{ text-shadow: 0 0 10px #ff444430; }
-    }
+  /* ===== Título glitch minimal ===== */
+  .logo{
+    position: relative; display:inline-block; color:#ff6b9a;
+    font-weight:900; letter-spacing:2px; text-transform:uppercase;
+    font-size: clamp(2rem, 7vw, 3.3rem);
+    margin: 0 0 18px;
+    filter: drop-shadow(0 1px 0 #00000080);
+    animation: glow 4s ease-in-out infinite;
+  }
+  .logo::before,.logo::after{
+    content: attr(data-text); position:absolute; inset:0; pointer-events:none;
+    mix-blend-mode: screen; opacity:.6;
+  }
+  .logo::before{ color:#00e5ff; animation: gx 2.8s steps(1,end) infinite; }
+  .logo::after { color:#ff0066; animation: gy 2.8s steps(1,end) infinite; }
+  @keyframes gx{0%,14%{transform:translateX(0)}15%,18%{transform:translateX(2px)}19%,22%{transform:translateX(-2px)}23%,100%{transform:translateX(0)}}
+  @keyframes gy{0%,14%{transform:translateY(0)}15%,18%{transform:translateY(-1px)}19%,22%{transform:translateY(1px)}23%,100%{transform:translateY(0)}}
+  @keyframes glow{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 10px #ff444430}}
 
-    /* ===== Links sociales (ícono + texto) ===== */
-    .contact{ margin-top:30px; }
-    .social{
-      display:inline-flex;
-      align-items:center;
-      gap:8px;
-      margin:10px 14px;
-    }
-    .social img{
-      width:22px; height:22px; 
-      display:block;
-      filter: drop-shadow(0 0 2px #000a);
-    }
+  /* ===== Sociales ===== */
+  .contact{ margin-top: 28px; }
+  .social{ display:inline-flex; align-items:center; gap:8px; margin:10px 14px; }
+  .social img{ width:22px; height:22px; display:block; filter: drop-shadow(0 0 2px #000a); }
 
-    /* accesibilidad: agrandá un poco en pantallas chicas */
-    @media (max-width:420px){
-      .social{ margin:10px 8px; }
-    }
-  </style>
+  /* ===== Card Raspa & Gana ===== */
+  .card{
+    width: min(92vw, 680px);
+    margin: 26px auto 10px;
+    background: #121212;
+    border: 1px solid #232323;
+    border-radius: 16px;
+    padding: 18px 18px 24px;
+    box-shadow: 0 10px 30px #0007, inset 0 0 40px #0008;
+  }
+  .subtle{ color:#d6d6d6; opacity:.9; }
+  .muted{ color: var(--muted); opacity:.85; font-size:.95em; }
+
+  .scratch-wrap{
+    position: relative;
+    margin: 14px auto 0;
+    width: min(92vw, 640px);
+    aspect-ratio: 16/7;           /* formato panorámico, queda fachero */
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 10px 30px #0009, inset 0 0 20px #0007;
+    background: linear-gradient(145deg,#101010,#0b0b0b);
+  }
+  .prize{
+    position:absolute; inset:0; display:grid; place-items:center; padding:18px;
+  }
+  .prize h2{
+    margin:0; line-height:1.2;
+    font-size: clamp(1.1rem, 3.2vw, 1.6rem);
+  }
+  .prize .big{
+    font-size: clamp(1.3rem, 4vw, 2rem);
+    color:#ff6b9a; font-weight:900; letter-spacing:.5px;
+  }
+  canvas#scratch{
+    position:absolute; inset:0; width:100%; height:100%;
+    /* “capa plateada” */
+    background:
+      radial-gradient(1200px 500px at 50% -20%, #ffffff10, #0000 60%),
+      linear-gradient(135deg, #ffffff, #bfbfbf 40%, #e9e9e9 60%, #cfcfcf);
+    mix-blend-mode: normal;
+    cursor: crosshair;
+  }
+
+  .btn{
+    background: var(--accent);
+    color: #fff; border:0;
+    padding: 12px 20px; border-radius: 999px;
+    font-weight: 700; cursor: pointer; margin-top: 14px;
+  }
+  .btn.secondary{
+    background: #2b2b2b; color:#f2f2f2; border:1px solid #3a3a3a;
+  }
+  .hint{ margin-top: 8px; color:#cfcfcf; opacity:.8; font-size:.95em; }
+</style>
 </head>
 <body>
   <div class="container">
     <h1 class="logo" data-text="HUSTLER TATTOO">HUSTLER TATTOO</h1>
 
     <p>🎉 Felicidades 🎉</p>
-    <p>Por escanear este código te ganaste un tatuaje gratis.</p>
-    <p>Pasame tu idea por:</p>
+    <p>Por escanear este código te ganaste un premio. <span class="subtle">Raspá para revelar.</span></p>
 
+    <!-- ===== RASPA Y GANA ===== -->
+    <div class="card">
+      <div class="scratch-wrap">
+        <!-- premio (texto se setea por JS) -->
+        <div id="prize" class="prize" aria-live="polite">
+          <div>
+            <div class="muted">Tu premio es:</div>
+            <h2 class="big" id="prizeText">—</h2>
+            <div class="muted" id="prizeNote"></div>
+          </div>
+        </div>
+        <!-- capa que se raspa -->
+        <canvas id="scratch"></canvas>
+      </div>
+
+      <div class="hint">Usá el dedo o el mouse para raspar. Al descubrir suficiente, se revela automáticamente.</div>
+      <button id="resetBtn" class="btn secondary" style="display:none">Volver a intentar</button>
+    </div>
+
+    <!-- ===== Contacto ===== -->
+    <p>Si querés coordinar ya mismo:</p>
     <div class="contact">
       <span class="social">
         <img src="/img/ig.png" alt="Instagram">
         <a href="https://www.instagram.com/_hustler_tatt" target="_blank">@_hustler_tatt</a>
       </span>
-
       <span class="social">
         <img src="/img/wsp.png" alt="WhatsApp">
         <a href="https://wa.me/59896590303" target="_blank">096 590 303</a>
       </span>
     </div>
   </div>
+
+<script>
+/* ================== CONFIGURACIÓN DE PREMIOS ================== */
+/* Editá labels si querés; weights controlan chances relativas. */
+const PRIZES = [
+  { label: "TATTOO IGNORANT GRATIS (hasta 6cm)", weight: 0.25, note:"Sujeto a disponibilidad y agenda." },
+  { label: "2 Tattoos x $3000 (hasta 9cm)",      weight: 0.45, note:"Precio promo por ambos. Línea y negro." },
+  { label: "MATCHING TATTOO 2X1 (para dos personas)", weight: 0.30, note:"Diseños iguales o combinados simples." }
+];
+
+/* ================== LÓGICA DE AZAR (ponderada) ================== */
+function pickWeighted(arr){
+  const total = arr.reduce((s,c)=>s+(c.weight||1),0);
+  let r = Math.random()*total;
+  for(const c of arr){ r -= (c.weight||1); if(r<=0) return c; }
+  return arr[arr.length-1];
+}
+
+const prize = (()=>{
+  // Opción: bloquear repetición en el mismo dispositivo por 24h
+  const KEY = "ht_scratch_prize";
+  const last = JSON.parse(localStorage.getItem(KEY) || "null");
+  const dayMs = 24*60*60*1000;
+  if(last && (Date.now()-last.time) < dayMs){ return last; }
+  const p = { ...pickWeighted(PRIZES), time: Date.now() };
+  localStorage.setItem(KEY, JSON.stringify(p));
+  return p;
+})();
+
+const prizeTextEl = document.getElementById('prizeText');
+const prizeNoteEl = document.getElementById('prizeNote');
+prizeTextEl.textContent = prize.label;
+prizeNoteEl.textContent  = prize.note || "";
+
+/* ================== SCRATCH (Canvas) ================== */
+const canvas = document.getElementById('scratch');
+const ctx = canvas.getContext('2d', { willReadFrequently:true });
+
+let drawing = false;
+let revealed = false;
+let lastX = 0, lastY = 0;
+const BRUSH = 26;             // tamaño del pincel
+const REVEAL_THRESHOLD = 0.46; // % a raspar para auto-revelar
+
+// Ajusta canvas a píxeles reales del tamaño CSS
+function fitCanvas(){
+  const rect = canvas.getBoundingClientRect();
+  const scale = window.devicePixelRatio || 1;
+  canvas.width  = Math.floor(rect.width * scale);
+  canvas.height = Math.floor(rect.height * scale);
+  ctx.scale(scale, scale);
+  paintCover();
+}
+function paintCover(){
+  const { width, height } = canvas.getBoundingClientRect();
+  // capa “tipo raspa”: gris con ruido leve y texto guía
+  ctx.globalCompositeOperation = 'source-over';
+  const grad = ctx.createLinearGradient(0,0,width,height);
+  grad.addColorStop(0, '#cfcfcf');
+  grad.addColorStop(1, '#a9a9a9');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0,0,width,height);
+
+  // pequeñas “rayas”
+  ctx.globalAlpha = .18;
+  for(let i=0;i<140;i++){
+    const x = Math.random()*width, y = Math.random()*height;
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(x, y, Math.random()*2+0.4, 1);
+  }
+  ctx.globalAlpha = 1;
+
+  // texto
+  ctx.fillStyle = '#1a1a1a';
+  ctx.font = 'bold 20px Arial';
+  ctx.textAlign = 'center';
+  ctx.fillText('RASPÁ PARA REVELAR', width/2, height/2);
+}
+
+function scratchTo(x,y){
+  const rect = canvas.getBoundingClientRect();
+  const cx = x - rect.left;
+  const cy = y - rect.top;
+
+  ctx.globalCompositeOperation = 'destination-out';
+  ctx.lineJoin = 'round';
+  ctx.lineCap  = 'round';
+  ctx.lineWidth = BRUSH*2;
+
+  ctx.beginPath();
+  ctx.moveTo(lastX || cx, lastY || cy);
+  ctx.lineTo(cx, cy);
+  ctx.stroke();
+
+  lastX = cx; lastY = cy;
+}
+
+function handleStart(e){
+  if(revealed) return;
+  drawing = true;
+  lastX = lastY = 0;
+  const p = (e.touches && e.touches[0]) || e;
+  scratchTo(p.clientX, p.clientY);
+  e.preventDefault();
+}
+function handleMove(e){
+  if(!drawing || revealed) return;
+  const p = (e.touches && e.touches[0]) || e;
+  scratchTo(p.clientX, p.clientY);
+  e.preventDefault();
+}
+function handleEnd(){
+  drawing = false;
+  lastX = lastY = 0;
+  // chequea porcentaje raspado (muestra cuando supera el umbral)
+  checkReveal();
+}
+
+function checkReveal(){
+  const rect = canvas.getBoundingClientRect();
+  const sample = ctx.getImageData(0,0,rect.width,rect.height).data;
+  let transparent = 0;
+  for(let i=3;i<sample.length;i+=4){ if(sample[i]===0) transparent++; }
+  const ratio = transparent / (sample.length/4);
+  if(ratio >= REVEAL_THRESHOLD){ doReveal(); }
+}
+
+function doReveal(){
+  if(revealed) return;
+  revealed = true;
+  // animación “desaparecer la capa”
+  canvas.style.transition = 'opacity .5s ease';
+  canvas.style.opacity = 0;
+  setTimeout(()=>{ canvas.style.display='none'; }, 520);
+  document.getElementById('resetBtn').style.display = 'inline-block';
+}
+
+// Reset (permite reintentar localmente)
+document.getElementById('resetBtn').addEventListener('click', ()=>{
+  revealed = false;
+  canvas.style.display = 'block';
+  canvas.style.opacity = 1;
+  fitCanvas();
+});
+
+window.addEventListener('resize', fitCanvas);
+window.addEventListener('orientationchange', fitCanvas);
+
+// Eventos pointer
+canvas.addEventListener('mousedown', handleStart);
+canvas.addEventListener('mousemove', handleMove);
+window.addEventListener('mouseup', handleEnd);
+
+canvas.addEventListener('touchstart', handleStart, {passive:false});
+canvas.addEventListener('touchmove',  handleMove,  {passive:false});
+canvas.addEventListener('touchend',   handleEnd);
+
+/* Init */
+fitCanvas();
+</script>
 </body>
 </html>
