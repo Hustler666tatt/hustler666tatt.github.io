@@ -51,20 +51,63 @@ mix-blend-mode:overlay;opacity:.18;
 }
 
 /* ===== TITULO GLITCH ===== */
+/* Título base: blanco frío */
 .logo{
   font-family:"EvilEmpire", Arial, sans-serif;
-  position:relative;display:inline-block;color:#00FFFF;
-  font-size:clamp(2.6rem,8vw,4rem);font-weight:900;letter-spacing:2px;
-  text-transform:uppercase;margin:0 0 18px;filter:drop-shadow(0 2px 1px #000);
+  color:#f5f5f5;                 /* blanco suave (podés usar #ffffff si querés más puro) */
+  position:relative;
+  display:inline-block;
+  font-size:clamp(2.6rem,8vw,4rem);
+  font-weight:900;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  margin:0 0 18px;
+  filter:drop-shadow(0 2px 1px #000);
+  text-shadow:0 0 6px #ffffff10;  /* halo sutil para contraste */
 }
-.logo::before,.logo::after{
-  content:attr(data-text);position:absolute;inset:0;pointer-events:none;
-  mix-blend-mode:screen;opacity:.6;
+
+/* Capas glitch: cian y rojo */
+.logo::before,
+.logo::after{
+  content:attr(data-text);
+  position:absolute; inset:0;
+  pointer-events:none;
+  mix-blend-mode:screen;
+  opacity:.8;                    /* subí/bajá para intensificar el efecto */
 }
-.logo::before{color:#00e5ff;animation:gx 2.8s steps(1,end) infinite;}
-.logo::after {color:#ff0066;animation:gy 2.8s steps(1,end) infinite;}
-@keyframes gx{0%,14%{transform:translateX(0)}15%,18%{transform:translateX(3px)}19%,22%{transform:translateX(-3px)}23%,100%{transform:translateX(0)}}
-@keyframes gy{0%,14%{transform:translateY(0)}15%,18%{transform:translateY(-2px)}19%,22%{transform:translateY(2px)}23%,100%{transform:translateY(0)}}
+
+/* Cian techno */
+.logo::before{
+  color:#00E5FF;                 /* celeste techno */
+  transform:translateX(0);       /* posición base */
+  animation:glitchX 2.8s steps(1,end) infinite;
+}
+
+/* Rojo clásico */
+.logo::after{
+  color:#FF0066;                 /* rojo magenta (podés usar #FF0044 si lo querés menos rosado) */
+  transform:translateX(0);
+  animation:glitchY 2.8s steps(1,end) infinite;
+}
+
+/* Micro-jumps tipo CRT */
+@keyframes glitchX{
+  0%,14% { transform:translateX(0) }
+  15%,18%{ transform:translateX(2px) }
+  19%,22%{ transform:translateX(-2px) }
+  23%,100%{ transform:translateX(0) }
+}
+@keyframes glitchY{
+  0%,14% { transform:translateY(0) }
+  15%,18%{ transform:translateY(-1px) }
+  19%,22%{ transform:translateY(1px) }
+  23%,100%{ transform:translateY(0) }
+}
+
+/* Respeta accesibilidad si el usuario pide menos animación */
+@media (prefers-reduced-motion: reduce){
+  .logo::before, .logo::after{ animation:none; }
+}
 
 /* ===== socials ===== */
 .contact{margin-top:28px;}
