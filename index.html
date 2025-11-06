@@ -161,8 +161,9 @@
 /* ================== CONFIGURACIÓN DE PREMIOS ================== */
 /* Editá labels si querés; weights controlan chances relativas. */
 /* Premios + probabilidades */
+/* Premios + probabilidades */
 const PRIZES = [
-  
+  { 
     label: "TATTOO IGNORANT GRATIS (hasta 6cm)", 
     weight: 0.20, 
     note:"Sujeto a disponibilidad y agenda. Debés subir una historia etiquetando @_hustler_tatt para validar."
@@ -198,8 +199,6 @@ const PRIZES = [
     note:"Retoque ligero. Requiere subir historia etiquetando."
   }
 ];
-
-
 /* ================== LÓGICA DE AZAR (ponderada) ================== */
 function pickWeighted(arr){
   const total = arr.reduce((s,c)=>s+(c.weight||1),0);
