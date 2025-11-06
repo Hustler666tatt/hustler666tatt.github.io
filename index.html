@@ -4,427 +4,297 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>HUSTLER TATTOO</title>
+
+<!-- ===== PRELOAD FUENTES ===== -->
+<link rel="preload" href="/fonts/evilempire.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="/fonts/digitalclock.woff2" as="font" type="font/woff2" crossorigin>
+
 <style>
-  :root{ --bg:#0b0b0b; --fg:#f5f5f5; --accent:#ff4444; --muted:#b1b1b1; }
+/* ===== FUENTES ===== */
+@font-face{
+  font-family: "EvilEmpire";
+  src: url("/fonts/evilempire.woff2") format("woff2");
+  font-display: swap;
+}
+@font-face{
+  font-family: "DigitalClock";
+  src: url("/fonts/digitalclock.woff2") format("woff2");
+  font-display: swap;
+}
 
-  /* ===== Base ===== */
-  html,body{height:100%;margin:0}
-  body{
-    background: var(--bg);
-    color: var(--fg);
-    font-family: Arial, Helvetica, sans-serif;
-    text-align: center;
-    overflow-x: hidden;
-  }
-  .container{ max-width: 860px; margin: 0 auto; padding: 64px 20px 96px; position: relative; z-index:1; }
-  p{ margin:12px 0; line-height:1.6; font-size:1.1em; }
-  a{ color: var(--accent); text-decoration: none; }
-  a:hover{ text-decoration: underline; }
+/* ===== BASE ===== */
+:root{ --bg:#0b0b0b; --fg:#f5f5f5; --accent:#ff4444; --muted:#b1b1b1; }
+html,body{height:100%;margin:0}
+body{
+  background:var(--bg); color:var(--fg);
+  font-family: Arial, Helvetica, sans-serif;
+  text-align:center; overflow-x:hidden;
+}
+.container{max-width:860px;margin:0 auto;padding:64px 20px 96px;position:relative;z-index:1;}
+p{margin:12px 0;line-height:1.6;font-size:1.1em;}
+a{color:var(--accent);text-decoration:none;}
+a:hover{text-decoration:underline;}
 
-  /* ===== Fondo grunge oscuro ===== */
-  body::before{
-    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-    background:
-      radial-gradient(1200px 600px at 50% -10%, #ffffff05, #0000 70%),
-      radial-gradient(1200px 600px at 50% 110%, #00000070, #0000 60%),
-      linear-gradient(180deg, #0b0b0b 0%, #0a0a0a 30%, #0c0c0c 60%, #0a0a0a 100%);
-  }
-  body::after{
-    content:""; position:fixed; inset:0; pointer-events:none; z-index:0;
-    background:
-      repeating-linear-gradient(120deg, #ffffff06 0 2px, #0000 2px 8px),
-      repeating-linear-gradient(0deg, #0000 0 1px, #ffffff06 1px 2px);
-    mix-blend-mode: overlay; opacity:.18;
-  }
+/* ===== FONDO ===== */
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+background:
+  radial-gradient(1200px 600px at 50% -10%, #ffffff05, #0000 70%),
+  radial-gradient(1200px 600px at 50% 110%, #00000070, #0000 60%),
+  linear-gradient(180deg,#0b0b0b 0%,#0a0a0a 30%,#0c0c0c 60%,#0a0a0a 100%);
+}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+background:
+  repeating-linear-gradient(120deg,#ffffff06 0 2px,#0000 2px 8px),
+  repeating-linear-gradient(0deg,#0000 0 1px,#ffffff06 1px 2px);
+mix-blend-mode:overlay;opacity:.18;
+}
 
-  /* ===== Título glitch minimal ===== */
-  .logo{
-    position: relative; display:inline-block; color:#ff6b9a;
-    font-weight:900; letter-spacing:2px; text-transform:uppercase;
-    font-size: clamp(2rem, 7vw, 3.3rem);
-    margin: 0 0 18px;
-    filter: drop-shadow(0 1px 0 #00000080);
-    animation: glow 4s ease-in-out infinite;
-  }
-  .logo::before,.logo::after{
-    content: attr(data-text); position:absolute; inset:0; pointer-events:none;
-    mix-blend-mode: screen; opacity:.6;
-  }
-  .logo::before{ color:#00e5ff; animation: gx 2.8s steps(1,end) infinite; }
-  .logo::after { color:#ff0066; animation: gy 2.8s steps(1,end) infinite; }
-  @keyframes gx{0%,14%{transform:translateX(0)}15%,18%{transform:translateX(2px)}19%,22%{transform:translateX(-2px)}23%,100%{transform:translateX(0)}}
-  @keyframes gy{0%,14%{transform:translateY(0)}15%,18%{transform:translateY(-1px)}19%,22%{transform:translateY(1px)}23%,100%{transform:translateY(0)}}
-  @keyframes glow{0%,100%{text-shadow:0 0 0 transparent}50%{text-shadow:0 0 10px #ff444430}}
+/* ===== TITULO GLITCH ===== */
+.logo{
+  font-family:"EvilEmpire", Arial, sans-serif;
+  position:relative;display:inline-block;color:#ff6b9a;
+  font-size:clamp(2.6rem,8vw,4rem);font-weight:900;letter-spacing:2px;
+  text-transform:uppercase;margin:0 0 18px;filter:drop-shadow(0 2px 1px #000);
+}
+.logo::before,.logo::after{
+  content:attr(data-text);position:absolute;inset:0;pointer-events:none;
+  mix-blend-mode:screen;opacity:.6;
+}
+.logo::before{color:#00e5ff;animation:gx 2.8s steps(1,end) infinite;}
+.logo::after {color:#ff0066;animation:gy 2.8s steps(1,end) infinite;}
+@keyframes gx{0%,14%{transform:translateX(0)}15%,18%{transform:translateX(3px)}19%,22%{transform:translateX(-3px)}23%,100%{transform:translateX(0)}}
+@keyframes gy{0%,14%{transform:translateY(0)}15%,18%{transform:translateY(-2px)}19%,22%{transform:translateY(2px)}23%,100%{transform:translateY(0)}}
 
-  /* ===== Sociales ===== */
-  .contact{ margin-top: 28px; }
-  .social{ display:inline-flex; align-items:center; gap:8px; margin:10px 14px; }
-  .social img{ width:22px; height:22px; display:block; filter: drop-shadow(0 0 2px #000a); }
+/* ===== socials ===== */
+.contact{margin-top:28px;}
+.social{display:inline-flex;align-items:center;gap:8px;margin:10px 14px;}
+.social img{width:22px;height:22px;filter:drop-shadow(0 0 2px #000a);}
 
-  /* ===== Badge Cry Baby ===== */
-  .badge{
-    display:none;
-    margin: 8px auto 0;
-    width: min(92vw, 680px);
-    background: #1a1a1a;
-    border: 1px dashed #444;
-    color:#f2f2f2;
-    padding:10px 14px;
-    border-radius:12px;
-    box-shadow: 0 6px 18px #0006;
-  }
-  .badge b{ color:#ff6b9a }
+/* ===== badge cry baby ===== */
+.badge{
+ display:none;margin:8px auto 0;width:min(92vw,680px);
+ background:#1a1a1a;border:1px dashed #444;color:#f2f2f2;
+ padding:10px 14px;border-radius:12px;box-shadow:0 6px 18px #0006;
+}
+.badge b{color:#ff6b9a}
 
-  /* ===== Card Raspa & Gana ===== */
-  .card{
-    width: min(92vw, 680px);
-    margin: 16px auto 10px;
-    background: #121212;
-    border: 1px solid #232323;
-    border-radius: 16px;
-    padding: 18px 18px 24px;
-    box-shadow: 0 10px 30px #0007, inset 0 0 40px #0008;
-  }
-  .subtle{ color:#d6d6d6; opacity:.9; }
-  .muted{ color: var(--muted); opacity:.85; font-size:.95em; }
+/* ===== scratch card ===== */
+.card{
+  width:min(92vw,680px);margin:16px auto 10px;background:#121212;
+  border:1px solid #232323;border-radius:16px;padding:18px 18px 24px;
+  box-shadow:0 10px 30px #0007,inset 0 0 40px #0008;
+}
+.subtle{opacity:.9;color:#d6d6d6}
+.muted{color:var(--muted);opacity:.85;font-size:.95em}
+.scratch-wrap{position:relative;margin:14px auto 0;width:min(92vw,640px);aspect-ratio:16/7;
+border-radius:14px;overflow:hidden;box-shadow:0 10px 30px #0009,inset 0 0 20px #0007;
+background:linear-gradient(145deg,#101010,#0b0b0b);}
+.prize{position:absolute;inset:0;display:grid;place-items:center;padding:18px;}
+.prize .big{
+  font-family:"DigitalClock", monospace; /* 👈 fuente del premio */
+  font-size:clamp(1.4rem,4vw,2.4rem);
+  color:#ff6b9a;font-weight:900;letter-spacing:1px;
+}
 
-  .scratch-wrap{
-    position: relative;
-    margin: 14px auto 0;
-    width: min(92vw, 640px);
-    aspect-ratio: 16/7;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 10px 30px #0009, inset 0 0 20px #0007;
-    background: linear-gradient(145deg,#101010,#0b0b0b);
-  }
-  .prize{
-    position:absolute; inset:0; display:grid; place-items:center; padding:18px;
-  }
-  .prize h2{
-    margin:0; line-height:1.2;
-    font-size: clamp(1.1rem, 3.2vw, 1.6rem);
-  }
-  .prize .big{
-    font-size: clamp(1.3rem, 4vw, 2rem);
-    color:#ff6b9a; font-weight:900; letter-spacing:.5px;
-  }
-  canvas#scratch{
-    position:absolute; inset:0; width:100%; height:100%;
-    background:
-      radial-gradient(1200px 500px at 50% -20%, #ffffff10, #0000 60%),
-      linear-gradient(135deg, #ffffff, #bfbfbf 40%, #e9e9e9 60%, #cfcfcf);
-    mix-blend-mode: normal;
-    cursor: crosshair;
-  }
+canvas#scratch{
+  position:absolute;inset:0;width:100%;height:100%;
+  background:
+    radial-gradient(1200px 500px at 50% -20%, #ffffff10, #0000 60%),
+    linear-gradient(135deg,#ffffff,#bfbfbf 40%,#e9e9e9 60%,#cfcfcf);
+  cursor:crosshair;
+}
 
-  .btn{
-    background: var(--accent);
-    color: #fff; border:0;
-    padding: 12px 20px; border-radius: 999px;
-    font-weight: 700; cursor: pointer; margin-top: 14px;
-  }
-  .btn.secondary{
-    background: #2b2b2b; color:#f2f2f2; border:1px solid #3a3a3a;
-  }
-  .hint{ margin-top: 8px; color:#cfcfcf; opacity:.8; font-size:.95em; }
+.btn{background:var(--accent);color:#fff;border:0;padding:12px 20px;
+border-radius:999px;font-weight:700;cursor:pointer;margin-top:14px;}
+.btn.secondary{background:#2b2b2b;color:#f2f2f2;border:1px solid #3a3a3a}
+.hint{margin-top:8px;color:#cfcfcf;opacity:.8;font-size:.95em}
+.locked{margin-top:10px;color:#cfcfcf;opacity:.9}
 
-  .locked{ margin-top:10px; color:#cfcfcf; opacity:.9; }
-
-  /* ===== Revelado: animación glitch/confetti ===== */
-  .burst{
-    position: fixed; inset:0; pointer-events:none; z-index: 10; display:none;
-  }
-  .burst .p{
-    position:absolute; width:6px; height:24px; background:#fff;
-    left:50%; top:40%;
-    transform-origin: center 200px;
-    opacity:.85;
-    animation: shoot 600ms ease-out forwards;
-  }
-  @keyframes shoot{
-    0% { transform: translate(-50%,-50%) rotate(var(--deg)) scaleY(1); opacity:1; }
-    100%{ transform: translate(calc(-50% + var(--dx)), calc(-50% + var(--dy))) rotate(var(--deg)) scaleY(0.2); opacity:0; }
-  }
+/* ===== glitch confetti ===== */
+.burst{position:fixed;inset:0;pointer-events:none;z-index:10;display:none;}
+.burst .p{
+ position:absolute;width:6px;height:24px;background:#fff;left:50%;top:40%;
+ transform-origin:center 200px;opacity:.85;animation:shoot 600ms ease-out forwards;
+}
+@keyframes shoot{
+ 0%{transform:translate(-50%,-50%) rotate(var(--deg)) scaleY(1);opacity:1;}
+ 100%{transform:translate(calc(-50% + var(--dx)),calc(-50% + var(--dy))) rotate(var(--deg)) scaleY(.2);opacity:0;}
+}
 </style>
 </head>
+
 <body>
-  <div class="container">
-    <h1 class="logo" data-text="HUSTLER TATTOO">HUSTLER TATTOO</h1>
+<div class="container">
+<h1 class="logo" data-text="HUSTLER TATTOO">HUSTLER TATTOO</h1>
 
-    <div id="badge" class="badge"></div>
+<div id="badge" class="badge"></div>
 
-    <p>🎉 Felicidades 🎉</p>
-    <p>Por escanear este código te ganaste un premio. <span class="subtle">Raspá para revelar.</span></p>
-    <p style="opacity:.8;font-size:.95em;margin-top:4px">
-      Para reclamar cualquier premio: <br>
-      <b>subí una historia etiquetando @_hustler_tatt</b> 📲🔥
-    </p>
+<p>🎉 Felicidades 🎉</p>
+<p>Por escanear este código te ganaste un premio. <span class="subtle">Raspá para revelar.</span></p>
+<p style="opacity:.8;font-size:.95em;margin-top:4px">
+Para reclamar el premio<br><b>subí una historia y etiquetá @_hustler_tatt</b> 📲🔥
+</p>
 
-    <!-- ===== RASPA Y GANA ===== -->
-    <div class="card">
-      <div id="lockMsg" class="locked" style="display:none"></div>
+<div class="card">
+<div id="lockMsg" class="locked" style="display:none"></div>
 
-      <div class="scratch-wrap" id="scratchWrap">
-        <div id="prize" class="prize" aria-live="polite">
-          <div>
-            <div class="muted">Tu premio es:</div>
-            <h2 class="big" id="prizeText">—</h2>
-            <div class="muted" id="prizeNote"></div>
-          </div>
-        </div>
-        <canvas id="scratch"></canvas>
-      </div>
-
-      <div class="hint" id="hint">Usá el dedo o el mouse para raspar. Al descubrir suficiente, se revela automáticamente.</div>
-      <button id="confirmStory" class="btn" style="display:none">Ya subí la historia ✅</button>
-      <button id="resetBtn" class="btn secondary" style="display:none">Volver a intentar</button>
-    </div>
-
-    <!-- ===== Contacto ===== -->
-    <p>Si querés coordinar ya mismo:</p>
-    <div class="contact">
-      <span class="social">
-        <img src="/img/ig.png" alt="Instagram">
-        <a href="https://www.instagram.com/_hustler_tatt" target="_blank">@_hustler_tatt</a>
-      </span>
-      <span class="social">
-        <img src="/img/wsp.png" alt="WhatsApp">
-        <a href="https://wa.me/59896590303" target="_blank">096 590 303</a>
-      </span>
+<div class="scratch-wrap" id="scratchWrap">
+  <div class="prize" aria-live="polite">
+    <div>
+      <div class="muted">Tu premio es:</div>
+      <h2 class="big" id="prizeText">—</h2>
+      <div class="muted" id="prizeNote"></div>
     </div>
   </div>
+  <canvas id="scratch"></canvas>
+</div>
 
-  <!-- capa confetti/glitch -->
-  <div id="burst" class="burst"></div>
+<div class="hint" id="hint">Usá el dedo o el mouse para raspar.</div>
+<button id="confirmStory" class="btn" style="display:none">Ya subí la historia ✅</button>
+<button id="resetBtn" class="btn secondary" style="display:none">Volver a intentar</button>
+</div>
 
+<p>Si querés coordinar ya mismo:</p>
+<div class="contact">
+  <span class="social">
+    <img src="/img/ig.png"><a href="https://www.instagram.com/_hustler_tatt" target="_blank">@_hustler_tatt</a>
+  </span>
+  <span class="social">
+    <img src="/img/wsp.png"><a href="https://wa.me/59896590303" target="_blank">096 590 303</a>
+  </span>
+</div>
+</div>
+
+<div id="burst" class="burst"></div>
+
+<!-- ========================================================= -->
+<!-- ======================= JAVASCRIPT ====================== -->
+<!-- (Tu lógica original con premios + story + cry baby + dev) -->
+<!-- ========================================================= -->
 <script>
-/* ================== MODO TEST & CONFIG ================== */
-/* Agregá ?test=1 a la URL para probar sin bloqueo diario. 
-   Agregá ?reset=1 para limpiar el premio guardado. */
+/* === MODO TEST === */
 const DEV = /[?&]test=1\b/.test(location.search) || location.hash.includes('#dev');
 const RESET = /[?&]reset=1\b/.test(location.search);
+if(RESET){localStorage.clear();}
 
-const LOCK_HOURS = DEV ? 0 : 24;               // bloqueo diario
-const NO_IMMEDIATE_REPEAT = true;
-const STORAGE_KEY = DEV ? "ht_scratch_prize_dev" : "ht_scratch_prize_v2";
-const STORY_KEY   = DEV ? "ht_story_ok_dev"     : "ht_story_ok";
-
-/* Limpia storage si se pide reset */
-if (RESET) {
-  localStorage.removeItem(STORAGE_KEY);
-  localStorage.removeItem(STORY_KEY);
-}
-
-/* Premios + probabilidades (incluye los nuevos) */
-const PRIZES = [
-  { label: "TATTOO IGNORANT GRATIS (hasta 6cm)", weight: 0.20, note:"Sujeto a disponibilidad y agenda. Requiere subir historia etiquetando." },
-  { label: "2 Tattoos x $3000 (hasta 9cm)",      weight: 0.25, note:"Precio promo por ambos. Línea y negro. Requiere historia etiquetando." },
-  { label: "MATCHING TATTOO 2X1 (dos personas)", weight: 0.15, note:"Diseños iguales o combinados simples. Requiere historia etiquetando." },
-  { label: "Cita privada nocturna (fuera de agenda)", weight: 0.08, note:"Experiencia exclusiva. Requiere historia etiquetando." },
-  { label: "Bebida / snack en el estudio",       weight: 0.08, note:"Cortesía del estudio. Requiere historia etiquetando." },
-  { label: "Piedra, papel o tijera por 50% OFF (si perdés → 10% OFF)", weight: 0.14, note:"Modo duelo 😈. Requiere historia etiquetando." },
-  { label: "Toque final / mejora de tattoo viejo gratis", weight: 0.10, note:"Retoque ligero. Requiere historia etiquetando." }
+/* === CONFIG === */
+const STORAGE="ht_scratch_v2",STORY="ht_story",CB="ht_cb";
+const now=Date.now(),LOCK=DEV?0:24*60*60*1000;
+const PRIZES=[
+{label:"TATTOO IGNORANT GRATIS (hasta 6cm)",weight:.20,note:"Requiere historia etiquetando"},
+{label:"2 Tattoos x $3000 (hasta 9cm)",weight:.25,note:"Requiere historia etiquetando"},
+{label:"MATCHING TATTOO 2X1 (dos personas)",weight:.15,note:"Requiere historia etiquetando"},
+{label:"Cita privada nocturna (fuera de agenda)",weight:.08,note:"Requiere historia etiquetando"},
+{label:"Bebida / snack en el estudio",weight:.08,note:"Requiere historia etiquetando"},
+{label:"Piedra, papel o tijera por 50% OFF (si perdés → 10% OFF)",weight:.14,note:"Requiere historia etiquetando"},
+{label:"Toque final / mejora de tattoo viejo gratis",weight:.10,note:"Requiere historia etiquetando"},
 ];
-
-/* ===== util ===== */
-const ms = h => h*60*60*1000;
-function pickWeighted(arr, avoidLabel){
-  const candidates = NO_IMMEDIATE_REPEAT && avoidLabel
-    ? arr.filter(p => p.label !== avoidLabel) : arr.slice();
-  const total = candidates.reduce((s,c)=>s+(c.weight||1),0);
-  let r = Math.random()*total;
-  for(const c of candidates){ r -= (c.weight||1); if(r<=0) return c; }
-  return candidates[candidates.length-1];
+function pick(last){
+ let list=PRIZES.filter(p=>p.label!==last);
+ let t=list.reduce((a,c)=>a+(c.weight||1),0),r=Math.random()*t;
+ for(const p of list){r-=(p.weight||1);if(r<=0)return p;}
+ return list[list.length-1];
 }
 
-/* ===== premio y bloqueo diario ===== */
-const now = Date.now();
-const last = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-if (DEV) { /* en test, no persistimos el último para que cambie siempre */
-  localStorage.removeItem(STORAGE_KEY);
+/* === obtener premio o bloquear === */
+let last=JSON.parse(localStorage.getItem(STORAGE)||"null"),p;
+let locked=last && now-last.time<LOCK;
+if(locked && !DEV){p=last;}
+else{
+ let avoid=last?.label;
+ p={...pick(avoid),time:now};
+ if(!DEV) localStorage.setItem(STORAGE,JSON.stringify(p));
 }
 
-let locked = false, prize;
-if (!DEV && last && (now - last.time) < ms(LOCK_HOURS)) {
-  locked = true;
-  prize = last;
-} else {
-  const lastLabel = last?.label;
-  prize = { ...pickWeighted(PRIZES, lastLabel), time: now };
-  if (!DEV) localStorage.setItem(STORAGE_KEY, JSON.stringify(prize));
+/* === mostrar premio === */
+prizeText.textContent=p.label;
+prizeNote.textContent=p.note;
+
+/* === cry baby badge === */
+if(localStorage.getItem(CB)==="1"){
+ badge.style.display="block";
+ badge.innerHTML=`🏳️ <b>Cry Baby badge</b>: la última vez te fuiste sin confirmar story 😭<br>Hoy podés jugar — o subí la story para reclamar.`;
+ localStorage.removeItem(CB);
 }
 
-/* ===== setear textos de premio ===== */
-const prizeTextEl = document.getElementById('prizeText');
-const prizeNoteEl = document.getElementById('prizeNote');
-prizeTextEl.textContent = prize.label;
-prizeNoteEl.textContent  = prize.note || "";
-
-/* ===== badge “Cry Baby” si abandonó sin confirmar story ===== */
-const badge = document.getElementById('badge');
-const pendingKey = "ht_cb_pending";
-const hadPending = localStorage.getItem(pendingKey) === "1";
-if (hadPending) {
-  badge.style.display = 'block';
-  badge.innerHTML = `🏳️ <b>Cry Baby badge</b> activado: la última vez te fuiste sin confirmar la historia. 
-  Hoy podés volver a intentar — o reclamá tu premio subiendo la story y tocando “Ya subí la historia”.`;
-  localStorage.removeItem(pendingKey);
+/* === bloqueo por día === */
+if(locked && !DEV){
+ let hrs=Math.ceil((LOCK-(now-last.time))/(3600000));
+ lockMsg.style.display="block";
+ lockMsg.textContent=`Ya jugaste hoy 😎 Volvé en ~${hrs}h`;
+ scratch.style.display="none";hint.style.display="none";
 }
 
-/* ===== UI de bloqueo (si aplica) ===== */
-const lockMsg = document.getElementById('lockMsg');
-const hint = document.getElementById('hint');
-const resetBtn = document.getElementById('resetBtn');
-const confirmBtn = document.getElementById('confirmStory');
-
-if (locked) {
-  const remainingMs = ms(LOCK_HOURS) - (now - last.time);
-  const hrs = Math.ceil(remainingMs/ (60*60*1000));
-  lockMsg.style.display = 'block';
-  lockMsg.textContent = `Ya jugaste hoy 😉 Volvé en ~${hrs}h para intentar de nuevo.`;
-  document.getElementById('scratch').style.display = 'none';
-  hint.style.display = 'none';
-  resetBtn.style.display = 'none';
-} else {
-  confirmBtn.style.display = 'none'; // aparecerá luego del reveal
+/* === scratch logic === */
+if(!locked||DEV){
+let ctx=scratch.getContext("2d",{willReadFrequently:true});
+let drawing=false,revealed=false,lastX=0,lastY=0;
+function fit(){
+ let r=scratch.getBoundingClientRect(),s=devicePixelRatio||1;
+ scratch.width=r.width*s;scratch.height=r.height*s;ctx.scale(s,s);
+ let g=ctx.createLinearGradient(0,0,r.width,r.height);
+ g.addColorStop(0,"#cfcfcf");g.addColorStop(1,"#a9a9a9");
+ ctx.fillStyle=g;ctx.fillRect(0,0,r.width,r.height);
+ ctx.globalAlpha=.18;for(let i=0;i<140;i++){ctx.fillStyle="#fff";
+ ctx.fillRect(Math.random()*r.width,Math.random()*r.height,Math.random()*2+.4,1);}
+ ctx.globalAlpha=1;ctx.fillStyle="#1a1a1a";ctx.font="bold 20px Arial";
+ ctx.textAlign="center";ctx.fillText("RASPÁ PARA REVELAR",r.width/2,r.height/2);
+}
+function scratchTo(x,y){
+ let r=scratch.getBoundingClientRect(),cx=x-r.left,cy=y-r.top;
+ ctx.globalCompositeOperation='destination-out';
+ ctx.lineJoin="round";ctx.lineCap="round";ctx.lineWidth=52;
+ ctx.beginPath();ctx.moveTo(lastX||cx,lastY||cy);ctx.lineTo(cx,cy);ctx.stroke();
+ lastX=cx;lastY=cy;
+}
+function reveal(){
+ if(revealed)return;revealed=true;
+ burst();scratch.style.opacity=0;
+ setTimeout(()=>scratch.style.display="none",500);
+ confirmStory.style.display="inline-block";
+ resetBtn.style.display="inline-block";
+}
+function burst(){
+ const layer=document.getElementById("burst");layer.innerHTML="";
+ for(let i=0;i<30;i++){
+  const d=document.createElement("div");d.className="p";
+  d.style.setProperty("--deg",Math.random()*360+"deg");
+  d.style.setProperty("--dx",(Math.random()*240-120)+"px");
+  d.style.setProperty("--dy",(Math.random()*240-120)+"px");
+  d.style.background=i%2?"#ff6b9a":(i%3?"#7aa2f7":"#f7c843");
+  layer.appendChild(d);
+ }
+ layer.style.display="block";setTimeout(()=>layer.style.display="none",650);
+}
+scratch.addEventListener("mousedown",e=>{drawing=true;scratchTo(e.clientX,e.clientY)});
+scratch.addEventListener("mousemove",e=>drawing&&scratchTo(e.clientX,e.clientY));
+window.addEventListener("mouseup",()=>drawing=false);
+scratch.addEventListener("touchstart",e=>{drawing=true;scratchTo(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();});
+scratch.addEventListener("touchmove",e=>{if(drawing)scratchTo(e.touches[0].clientX,e.touches[0].clientY);e.preventDefault();});
+scratch.addEventListener("touchend",()=>drawing=false);
+function check(){
+ let r=scratch.getBoundingClientRect();
+ let d=ctx.getImageData(0,0,r.width,r.height).data,t=0;
+ for(let i=3;i<d.length;i+=4){if(d[i]===0)t++;}
+ if(t/(d.length/4)>.48)reveal();
+}
+setInterval(check,300);
+window.addEventListener("resize",fit);fit();
 }
 
-/* ===== SCRATCH (Canvas) + revelado con burst glitch ===== */
-const canvas = document.getElementById('scratch');
-if (!locked) {
-  const ctx = canvas.getContext('2d', { willReadFrequently:true });
-  let drawing = false, revealed = false;
-  let storyOk = localStorage.getItem(STORY_KEY) === '1';
-  let lastX = 0, lastY = 0;
-  const BRUSH = 26;
-  const REVEAL_THRESHOLD = 0.46;
-
-  function fitCanvas(){
-    const rect = canvas.getBoundingClientRect();
-    const scale = window.devicePixelRatio || 1;
-    canvas.width  = Math.floor(rect.width * scale);
-    canvas.height = Math.floor(rect.height * scale);
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
-    paintCover();
-  }
-  function paintCover(){
-    const { width, height } = canvas.getBoundingClientRect();
-    ctx.globalCompositeOperation = 'source-over';
-    const grad = ctx.createLinearGradient(0,0,width,height);
-    grad.addColorStop(0, '#cfcfcf'); grad.addColorStop(1, '#a9a9a9');
-    ctx.fillStyle = grad; ctx.fillRect(0,0,width,height);
-    ctx.globalAlpha = .18;
-    for(let i=0;i<140;i++){
-      const x = Math.random()*width, y = Math.random()*height;
-      ctx.fillStyle = '#ffffff'; ctx.fillRect(x, y, Math.random()*2+0.4, 1);
-    }
-    ctx.globalAlpha = 1;
-    ctx.fillStyle = '#1a1a1a'; ctx.font = 'bold 20px Arial';
-    ctx.textAlign = 'center';
-    ctx.fillText('RASPÁ PARA REVELAR', width/2, height/2);
-  }
-  function scratchTo(x,y){
-    const rect = canvas.getBoundingClientRect();
-    const cx = x - rect.left, cy = y - rect.top;
-    ctx.globalCompositeOperation = 'destination-out';
-    ctx.lineJoin = 'round'; ctx.lineCap = 'round'; ctx.lineWidth = BRUSH*2;
-    ctx.beginPath(); ctx.moveTo(lastX || cx, lastY || cy); ctx.lineTo(cx, cy); ctx.stroke();
-    lastX = cx; lastY = cy;
-  }
-  function handleStart(e){
-    if(revealed) return;
-    drawing = true; lastX = lastY = 0;
-    const p = (e.touches && e.touches[0]) || e;
-    scratchTo(p.clientX, p.clientY); e.preventDefault();
-  }
-  function handleMove(e){
-    if(!drawing || revealed) return;
-    const p = (e.touches && e.touches[0]) || e;
-    scratchTo(p.clientX, p.clientY); e.preventDefault();
-  }
-  function handleEnd(){
-    drawing = false; lastX = lastY = 0; checkReveal();
-  }
-  function checkReveal(){
-    const rect = canvas.getBoundingClientRect();
-    const sample = ctx.getImageData(0,0,rect.width,rect.height).data;
-    let transparent = 0;
-    for(let i=3;i<sample.length;i+=4){ if(sample[i]===0) transparent++; }
-    const ratio = transparent / (sample.length/4);
-    if(ratio >= REVEAL_THRESHOLD){ doReveal(); }
-  }
-
-  /* Burst glitch/confetti minimal */
-  function burst(){
-    const layer = document.getElementById('burst');
-    layer.innerHTML = '';
-    const N = 32;
-    for (let i=0;i<N;i++){
-      const el = document.createElement('div');
-      el.className = 'p';
-      const deg = Math.random()*360;
-      const dx = (Math.random()*240-120)+'px';
-      const dy = (Math.random()*240-80)+'px';
-      el.style.setProperty('--deg', deg+'deg');
-      el.style.setProperty('--dx', dx);
-      el.style.setProperty('--dy', dy);
-      el.style.background = (i%2? '#ff6b9a' : (i%3? '#7aa2f7' : '#f7c843'));
-      layer.appendChild(el);
-    }
-    layer.style.display = 'block';
-    setTimeout(()=>{ layer.style.display = 'none'; }, 650);
-  }
-
-  function doReveal(){
-    if(revealed) return;
-    revealed = true;
-    burst(); // animación
-    canvas.style.transition = 'opacity .5s ease';
-    canvas.style.opacity = 0;
-    setTimeout(()=>{ canvas.style.display = 'none'; }, 520);
-    resetBtn.style.display = 'inline-block';
-    confirmBtn.style.display = 'inline-block';
-  }
-
-  /* Confirmación de story (para evitar Cry Baby) */
-  confirmBtn.addEventListener('click', ()=>{
-    localStorage.setItem(STORY_KEY, '1');
-    confirmBtn.textContent = '¡Listo! Gracias por etiquetar 🙌';
-    confirmBtn.disabled = true;
-  });
-
-  /* Si se va sin confirmar story después de revelar → Cry Baby */
-  window.addEventListener('beforeunload', ()=>{
-    const confirmed = localStorage.getItem(STORY_KEY) === '1';
-    if (revealed && !confirmed) {
-      localStorage.setItem('ht_cb_pending', '1');
-    }
-  });
-
-  resetBtn.addEventListener('click', ()=>{
-    // reintenta localmente sin cambiar el premio del día
-    revealed = false;
-    canvas.style.display = 'block';
-    canvas.style.opacity = 1;
-    confirmBtn.style.display = 'none';
-    confirmBtn.disabled = false;
-    confirmBtn.textContent = 'Ya subí la historia ✅';
-    localStorage.removeItem(STORY_KEY);
-    fitCanvas();
-  });
-
-  window.addEventListener('resize', fitCanvas);
-  window.addEventListener('orientationchange', fitCanvas);
-  canvas.addEventListener('mousedown', handleStart);
-  canvas.addEventListener('mousemove', handleMove);
-  window.addEventListener('mouseup', handleEnd);
-  canvas.addEventListener('touchstart', handleStart, {passive:false});
-  canvas.addEventListener('touchmove',  handleMove,  {passive:false});
-  canvas.addEventListener('touchend',   handleEnd);
-
-  fitCanvas();
+/* === confirmar story === */
+confirmStory.onclick=()=>{
+ localStorage.setItem(STORY,"1");
+ confirmStory.textContent="¡Gracias por etiquetar! 🔥";
+ confirmStory.disabled=true;
 }
+
+/* === cry baby detection === */
+window.addEventListener("beforeunload",()=>{
+ if(!localStorage.getItem(STORY)&&scratch.style.display==="none"){
+  localStorage.setItem(CB,"1");
+ }
+});
 </script>
 </body>
 </html>
