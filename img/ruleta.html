@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Ruleta | HUSTLER TATTOO</title>
+<style>
+  :root{ --bg:#0b0b0b; --fg:#f5f5f5; --accent:#ff4444; }
+  html,body{height:100%;margin:0}
+  body{background:var(--bg);color:var(--fg);font-family:Arial,Helvetica,sans-serif;text-align:center;overflow-x:hidden}
+  .container{max-width:860px;margin:0 auto;padding:60px 20px;position:relative;z-index:1}
+  a{color:var(--accent);text-decoration:none}
+  a:hover{text-decoration:underline}
+  /* fondo grunge sutil */
+  body::before{content:"";position:fixed;inset:0;background:
+    radial-gradient(1200px 600px at 50% -10%, #ffffff05, #0000 70%),
+    radial-gradient(1200px 600px at 50% 110%, #00000070, #0000 60%),
+    linear-gradient(180deg,#0b0b0b 0%,#0a0a0a 30%,#0c0c0c 60%,#0a0a0a 100%);pointer-events:none}
+  body::after{content:"";position:fixed;inset:0;background:
+    repeating-linear-gradient(120deg,#ffffff06 0 2px,#0000 2px 8px),
+    repeating-linear-gradient(0deg,#0000 0 1px,#ffffff06 1px 2px);
+    mix-blend-mode:overlay;opacity:.15;pointer-events:none}
+  /* título glitch minimal (igual que tu home) */
+  .logo{position:relative;display:inline-block;color:#ff6b9a;font-weight:900;letter-spacing:2px;
+        font-size:clamp(2rem,6vw,3rem);margin:0 0 20px;text-transform:uppercase}
+  .logo::before,.logo::after{content:attr(data-text);position:absolute;inset:0;pointer-events:none;mix-blend-mode:screen;opacity:.6}
+  .logo::before{color:#00e5ff;animation:gx 2.8s steps(1,end) infinite}
+  .logo::after{color:#ff0066;animation:gy 2.8s steps(1,end) infinite}
+  @keyframes gx{0%,14%{transform:translateX(0)}15%,18%{transform:translateX(2px)}19%,22%{transform:translateX(-2px)}23%,100%{transform:translateX(0)}}
+  @keyframes gy{0%,14%{transform:translateY(0)}15%,18%{transform:translateY(-1px)}19%,22%{transform:translateY(1px)}23%,100%{transform:translateY(0)}}
+  /* ruleta */
+  .wheel-wrap{margin:28px auto 16px; width:min(92vw,420px); position:relative}
+  .wheel{width:100%;aspect-ratio:1;border-radius:50%;border:8px solid #111;box-shadow:0 0 0 2px #222, 0 12px 30px #0008;
+         transition:transform 4s cubic-bezier(.2,.9,.1,1)}
+  .pointer{position:absolute;top:-10px;left:50%;transform:translateX(-50%);width:0;height:0;
+           border-left:12px solid transparent;border-right:12px solid transparent;border-bottom:18px solid var(--accent);filter:drop-shadow(0 2px 0 #000)}
+  .btn{background:var(--accent);color:#fff;border:0;padding:12px 22px;border-radius:999px;font-weight:700;cursor:pointer}
+  .btn:disabled{opacity:.6;cursor:not-allowed}
+  .result{font-size:1.2rem;margin-top:14px;min-height:1.6em}
+  /* socials compactos */
+  .contact{margin-top:26px}
+  .social{display:inline-flex;align-items:center;gap:8px;margin:10px 14px}
+  .social img{width:22px;height:22px;display:block;filter:drop-shadow(0 0 2px #000a)}
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1 class="logo" data-text="HUSTLER TATTOO">HUSTLER TATTOO</h1>
+    <p>🎯 Girá la ruleta para ver tu premio</p>
+
+    <div class="wheel-wrap">
+      <div class="pointer"></div>
+      <div id="wheel" class="wheel"></div>
+    </div>
+
+    <button id="spinBtn" class="btn">Girar</button>
+    <div id="result" class="result"></div>
+
+    <div class="contact">
+      <span class="social">
+        <img src="/img/ig.png" alt="Instagram">
+        <a href="https://www.instagram.com/_hustler_tatt" target="_blank">@_hustler_tatt</a>
+      </span>
+      <span class="social">
+        <img src="/img/wsp.png" alt="WhatsApp">
+        <a href="https://wa.me/59896590303" target="_blank">096 590 303</a>
+      </span>
+    </div>
+  </div>
+
+<script>
+/* ==== EDITABLE: premios (texto y probabilidad) ==== */
+const PRIZES = [
+  { label: "Tattoo gratis (5cm máx)", weight: 0.25 },
+  { label: "50% OFF diseño pequeño",   weight: 0.20 },
+  { label: "10% OFF cualquier pieza",  weight: 0.25 },
+  { label: "Sticker pack HUSTLER",     weight: 0.15 },
+  { label: "Cita prioritaria",         weight: 0.10 },
+  { label: "Revisión/diseño gratis",   weight: 0.05 }
+];
+
+// Normaliza pesos y arma sectores
+const total = PRIZES.reduce((s,p)=>s+(p.weight||1),0);
+const sectors = PRIZES.map(p=>({ ...p, frac:(p.weight||1)/total }));
+// Genera el fondo de la rueda con conic-gradient
+const colors = ["#ff6b9a","#7ee787","#7aa2f7","#f7c843","#f7768e","#9d7cff"];
+let acc = 0, stops = [];
+for (let i=0;i<sectors.length;i++){
+  const start = acc*100, end = (acc+sectors[i].frac)*100;
+  const col = colors[i%colors.length];
+  stops.push(`${col} ${start}% ${end}%`);
+  acc += sectors[i].frac;
+}
+document.getElementById("wheel").style.background = `conic-gradient(${stops.join(",")})`;
+
+// Calcula sector por ángulo (0° arriba, sentido horario)
+function angleToPrize(angleDeg){
+  // pasamos ángulo a [0,1) empezando en la parte superior
+  let t = ((360 - (angleDeg % 360)) % 360) / 360;
+  let sum = 0;
+  for (const s of sectors){
+    sum += s.frac;
+    if (t <= sum) return s;
+  }
+  return sectors[sectors.length-1];
+}
+
+const wheel = document.getElementById("wheel");
+const btn = document.getElementById("spinBtn");
+const out = document.getElementById("result");
+
+// Evitar repetición en el mismo dispositivo (opcional)
+const already = localStorage.getItem("ht_ruleta_done");
+if(already){ btn.textContent = "Ya jugaste"; btn.disabled = false; } // igual dejamos jugar
+
+btn.addEventListener("click", ()=>{
+  btn.disabled = true; out.textContent = "Girando…";
+  // ángulo final: 5 vueltas + un offset aleatorio ponderado
+  const rnd = Math.random(); // elegimos premio por peso
+  let r = rnd * total, pick = PRIZES[0], acc=0;
+  for (const p of PRIZES){ acc += (p.weight||1); if(r<=acc){ pick=p; break; } }
+  // convertir premio elegido a un ángulo dentro de su sector
+  let start = 0;
+  for(const s of sectors){ 
+    if(s.label===pick.label) break; 
+    start += s.frac; 
+  }
+  const inner = start*360, span = pick.weight/total*360;
+  const angle = 360*5 + inner + (Math.random()*span*0.8 + span*0.1); // cae dentro del sector
+  wheel.style.transform = `rotate(${angle}deg)`;
+
+  setTimeout(()=>{
+    out.textContent = `🎁 ${pick.label}`;
+    btn.textContent = "Volver a girar";
+    btn.disabled = false;
+    localStorage.setItem("ht_ruleta_done", Date.now());
+  }, 4200);
+});
+</script>
+</body>
+</html>
